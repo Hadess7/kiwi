@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Écran de Chargement avec Barre de Progression Inversée</title>
+    <style>
+        /* Style de l'écran de chargement */
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7); /* Fond semi-transparent */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999; /* Assurez-vous qu'il est au-dessus des autres éléments */
+        }
+
+        /* Style de la barre de progression */
+        #progressBarContainer {
+            width: 800%; /* Largeur de la barre de progression (réduite pour être plus raisonnable) */
+            background-color: #ddd;
+            border-radius: 25px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        #progressBar {
+            height: 20px; /* Hauteur de la barre */
+            width: 0; /* Largeur initiale de la barre (commence à 0) */
+            background-color: #2d98b3; /* Couleur de la barre (bleu) */
+            text-align: center;
+            line-height: 20px;
+            color: white;
+            border-radius: 25px;
+        }
+
+        /* Texte de chargement */
+        #loadingText {
+            color: white;
+            font-size: 24px;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Image au-dessus du fond de l'écran de chargement */
+
+        .icon{
+            left: 250px;
+            width: 200px;  /* Largeur de l'image */
+            height: auto;   /* Hauteur automatique pour garder les proportions */
+            position: absolute;
+            top: 550px;  /* Positionnement à 50px du haut */
+            z-index: 99999;
+        }
+        .fond{
+            left: 0px;
+            width: 2000px;  /* Largeur de l'image */
+            height: auto;   /* Hauteur automatique pour garder les proportions */
+            position: absolute;
+            top: 750px;  /* Positionnement à 50px du haut */
+            z-index: 99999;
+        }
+
+
+    </style>
+</head>
+<body>
+
+    <!-- L'écran de chargement -->
+    <div id="loadingScreen">
+        <div>
+            <div id="loadingText">Veuillez patienter...</div>
+            <div id="progressBarContainer">
+                <div id="progressBar">0%</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenu principal de la page -->
+    <div id="mainContent" style="display: none;">
+        <h1>Bienvenue sur ma page</h1>
+        <p>Le contenu de votre page apparaît ici une fois le chargement terminé.</p>
+    </div>
+
+    <script>
+        // Fonction pour simuler le chargement avec une barre de progression
+        function simulateLoading() {
+            let progress = 0; // Progrès initial
+            let increasing = true; // Variable pour savoir si la barre doit augmenter ou diminuer
+            const progressBar = document.getElementById("progressBar");
+
+            // Fonction pour mettre à jour la barre de progression
+            const interval = setInterval(() => {
+                if (increasing) {
+                    progress += 1; // Augmenter le progrès
+                    if (progress >= 100) {
+                        increasing = false; // Lorsque le progrès atteint 100%, commencer à diminuer
+                    }
+                } else {
+                    progress -= 1; // Diminuer le progrès
+                }
+
+                progressBar.style.width = progress + "%"; // Mettre à jour la largeur de la barre
+                progressBar.innerText = progress + "%"; // Afficher le pourcentage dans la barre
+
+                // Une fois que le progrès atteint 0%, terminer le chargement
+                if (progress <= 0) {
+                    clearInterval(interval); // Arrêter l'intervalle
+                    document.getElementById("loadingScreen").style.display = "none"; // Cacher l'écran de chargement
+                    document.getElementById("mainContent").style.display = "block"; // Afficher le contenu principal
+                    window.location.href = '/accueille.html';
+                }
+            }, 150); // Met à jour la barre toutes les 50ms
+        }
+
+        // Démarrer la simulation de chargement après le chargement de la page
+        window.onload = simulateLoading;
+    </script>
+
+    <!-- Image de l'icône qui s'affiche au-dessus de l'écran de chargement -->
+    <div class="content">
+        <img  class="icon"   src="icon.png" alt="Icône de chargement">
+        <img  class="fond"   src="fondchargement.png" alt="Description de l'image" width="700" height="auto">
+    </div>
+
+</body>
+</html>

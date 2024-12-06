@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="bu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <title>Rétro-Gaming Générique</title>
+    <style>
+        /* Mise en page de base */
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: black;
+            font-family: 'Press Start 2P', sans-serif; /* Police rétro */
+            color: lime;
+        }
+
+        /* Zone du générique */
+        .credits-container {
+            position: absolute;
+            bottom: -100%; /* Commence en dehors de l'écran */
+            width: 100%;
+            text-align: center;
+            animation: scrollCredits 15s linear forwards;
+        }
+
+        /* Effet de défilement */
+        @keyframes scrollCredits {
+            from {
+                bottom: -100%;
+            }
+            to {
+                bottom: 100%;
+            }
+        }
+
+        /* Style du texte */
+        h1, h2, p {
+            margin: 20px 0;
+        }
+
+        h1 {
+            font-size: 3em;
+            color: #ff006e;
+            text-shadow: 2px 2px 5px #000;
+        }
+
+        h2 {
+            font-size: 2em;
+            color: #00f5d4;
+        }
+
+        p {
+            font-size: 1.2em;
+            color: lime;
+        }
+
+        /* Effet clignotant */
+        .blink {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* Bande rétro en haut et en bas */
+        .border {
+            position: fixed;
+            width: 100%;
+            height: 50px;
+            background: repeating-linear-gradient(
+                45deg,
+                #ff006e,
+                #ff006e 10px,
+                #00f5d4 10px,
+                #00f5d4 20px
+            );
+        }
+
+        .border.top {
+            top: 0;
+        }
+
+        .border.bottom {
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Bande rétro -->
+    <div class="border top"></div>
+
+    <!-- Contenu du générique -->
+    <div class="credits-container">
+        <h1>Kiwi</h1>
+        <h2>Présente</h2>
+        <h2>🕹️ UN SITE EXTRAORDINAIRE 🕹️</h2>
+        <p>Développé par :</p>
+        <p>👾 Hadess (Matthis) 👾</p>
+        <p>👾 Ln(a) (Helena) 👾</p>
+        <p>👾 Tronxi (Gabin) 👾</p>
+        <p>👾 Gougoumag (Goulven) 👾</p>
+        <p>👾 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA (Lison) 👾</p>
+        <p>👾 Kor bite (Tobias) 👾</p>
+
+        <h2>⭐ Merci d'avoir regardé ! ⭐</h2>
+    </div>
+
+    <!-- Bande rétro -->
+    <div class="border bottom"></div>
+
+    <script>
+        // Écouter les touches clavier
+        document.addEventListener('keydown', () => {
+            // Retourner à la page précédente
+            history.back();
+        });
+
+        // Lancer l'animation
+        const credits = document.querySelector('.credits-container');
+        credits.style.animation = 'scrollCredits 15s linear forwards';
+    </script>
+</body>
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <title>Kiwi on Océan</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+         /* Example content */
+        .content {
+            position: relative;
+            z-index: 1; /* Content stays on top of the iframe */
+            color: white;
+            text-align: center;
+            padding: 50px;
+        }
+        img {
+            width: 600px;  /* Largeur de l'image */
+            height: auto;   /* Hauteur automatique pour garder les proportions */
+            position: absolute; /* Position absolue */
+            top: 100px; /* Position verticale */
+            left: 150px; /* Position horizontale */
+        }
+        .dark-mode {
+            background-color: #000;
+            color: #ffffff;
+        }
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        header {
+            background-color: #bfe1eb; /* Bleu océan */
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        nav {
+            display: flex;
+            gap: 30px;
+        }
+        nav a {
+            text-decoration: none;
+            color: black;
+            font-size: 1.2em;
+            transition: color 0.3s;
+        }  
+        nav a:hover {
+            transform: scale(1.3);
+        }
+        .texte-mouvement {
+            position: absolute;
+            font-size: 24px;
+            font-weight: bold;
+            white-space: nowrap;
+            opacity: 1;
+            transition: opacity 1s;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">🥝🔛​🌊​</div>
+        <!---
+        <div class="hamburger" onclick="toggleMenu()">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>   
+        -->
+        
+        <nav>
+            <a href="#accueil">🫆​​</a>
+            <a href="#simulations">🫆​🫆​🫆​</a>
+            <a href="#mini-jeux">🫆​🫆​​​</a>
+            <a href="generique.html">💬​⬇️​</a>
+            <a href="#" id="darkModeToggle">🌕​🔁​🌚​</a>
+        </nav>
+    </header>
+    
+    <div class="content">
+        <img id="imgTitle" src="titre.png">
+    </div>
+
+    <canvas id="oceanCanvas"></canvas>
+
+
+    <script>
+        const canvas = document.getElementById("oceanCanvas");
+        const ctx = canvas.getContext("2d");
+
+        // Ajuster la taille du canvas
+        function adjustCanvasSize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        adjustCanvasSize();
+
+        const width = canvas.width;
+        const height = canvas.height;
+
+        // Paramètres pour l'océan
+        const waveCount = 5; // Nombre de vagues principales
+        const waveAmplitude = 20; // Hauteur maximale des vagues
+        const waveSpeed = 0.02; // Vitesse de déplacement des vagues
+        const gradientColor = ["#002f66", "#005f99", "#008fb3", "#00b8e6"]; // Dégradé d'eau
+        const pixelSize = 8; // Taille de chaque "pixel" pour l'effet rétro
+
+        let time = 0;
+
+        // Fonction pour dessiner une vague donnée avec de l'écume
+        function drawWaveWithFoam(yOffset, amplitude, frequency, phase, gradient) {
+            for (let x = 0; x <= width; x += pixelSize) {
+                for (let y = 0; y <= height; y += pixelSize) {
+                    const wave =
+                        height / 2 + yOffset + Math.sin((x * frequency + phase) + time) * amplitude;
+
+                    // Calculer la distance du pixel à la vague
+                    const distanceToWave = Math.abs(y - wave);
+
+                    // Appliquer une couleur selon la position
+                    if (distanceToWave < pixelSize) {
+                        // Crête de vague avec écume
+                        ctx.fillStyle = "#ffffff"; // Blanc pour l'écume
+                        ctx.fillRect(x, y, pixelSize, pixelSize);
+                    } else if (distanceToWave < pixelSize * 3) {
+                        // Proche de la crête : couleur de l'eau
+                        ctx.fillStyle = gradient;
+                        ctx.fillRect(x, y, pixelSize, pixelSize);
+                    }
+                }
+            }
+        }
+
+        function drawOcean() {
+            // Nettoyer l'écran
+            ctx.clearRect(0, 0, width, height);
+
+            // Définir un dégradé pour l'effet d'eau
+            const gradient = ctx.createLinearGradient(0, height, 0, 0);
+            gradient.addColorStop(0, gradientColor[0]);
+            gradient.addColorStop(0.5, gradientColor[1]);
+            gradient.addColorStop(0.75, gradientColor[2]);
+            gradient.addColorStop(1, gradientColor[3]);
+
+            // Dessiner plusieurs couches de vagues avec écume
+            for (let i = 0; i < waveCount; i++) {
+                const yOffset = i * 10; // Décalage progressif entre les vagues
+                const amplitude = waveAmplitude - i * 3; // Diminuer l'amplitude pour les vagues au loin
+                const frequency = 0.02 + i * 0.01; // Augmenter la fréquence pour plus de détail
+                drawWaveWithFoam(yOffset, amplitude, frequency, i * Math.PI / 4, gradient);
+            }
+        }
+
+        // Function to simulate lag by adding delay in the animation loop
+        function laggyAnimation() {
+            time += waveSpeed;
+            drawOcean();
+            
+            // Introducing artificial delay to simulate lag
+            setTimeout(() => {
+                requestAnimationFrame(laggyAnimation);
+            }, 100); // Set a delay in milliseconds (e.g., 100ms, adjust for more lag)
+        }
+
+        laggyAnimation();
+
+        // Ajuster la taille du canvas lors du redimensionnement
+        window.addEventListener("resize", () => {
+            adjustCanvasSize();
+        });
+
+        function jouerSon() {
+            var son = new Audio('Flashbang.mp3');
+            son.play();
+        }
+
+        function toggleDarkMode() {
+            const body = document.body;
+            const img = document.getElementById("imgTitle");
+            let isDarkMode = body.classList.contains("dark-mode");
+            jouerSon();
+            // Inverser le mode sombre toutes les 50 ms
+            let interval = setInterval(() => {
+                body.classList.toggle("dark-mode");
+                img.src = body.classList.contains("dark-mode") ? "titre_noir.png" : "titre.png";
+            }, 50);
+
+            // Arrêter après 5 secondes et fixer l'état final
+            setTimeout(() => {
+                clearInterval(interval);
+                if (!isDarkMode) {
+                    body.classList.add("dark-mode");
+                    img.src = "titre_noir.png";
+                } else {
+                    body.classList.remove("dark-mode");
+                    img.src = "titre.png";
+                }
+            }, 5000);
+        }
+
+
+        document.getElementById("darkModeToggle").addEventListener("click", (event) => {
+            event.preventDefault();
+            toggleDarkMode();
+        });
+
+
+
+        //Poisson
+        const txt = ["🐟​", "🐠", "​🐡​"];
+        
+        function getWaveHeight(x, yOffset, amplitude, frequency, phase) {
+            return height / 2 + yOffset + Math.sin((x * frequency + phase) + time) * amplitude + 150;
+        }
+
+        function bomb() {
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    window.open('https://www.raceforwater.org/fr/', '_blank');
+                }, i * 1000);
+            }
+        }
+
+        function spawnTexte() {
+            console.log("here");
+            // Créer un nouvel élément de texte
+            const texte = document.createElement("div");
+            
+            // Sélectionner un texte aléatoire
+            const texteAleatoire = txt[Math.floor(Math.random() * txt.length)];
+            texte.textContent = texteAleatoire;
+
+            // Appliquer la classe pour le style
+            texte.classList.add("texte-mouvement");
+
+            // Ajouter l'élément au body
+            document.body.appendChild(texte);
+
+            // Initialiser la position du texte à droite (hors écran)
+            const startPositionX = window.innerWidth;
+
+            // Position de départ
+            texte.style.left = startPositionX + "px";
+            const waveHeight = getWaveHeight(startPositionX, 0, waveAmplitude, 0.02, 0); // À ajuster en fonction de la position horizontale
+            texte.style.top = waveHeight + "px"; // Position verticale aléatoire
+
+
+             // Fonction lors du clic sur le texte
+            texte.onclick = function() {
+                alert("IL NE FAUT PAS TUER LES POISSONS");
+                bomb();
+                texte.remove();
+            };
+
+
+            // Animation de déplacement du texte de droite à gauche
+            const animation = () => {
+                const positionX = parseInt(texte.style.left) - 0.5; // Déplacer de 0.5px par frame
+                texte.style.left = positionX + "px";
+
+                // Quand le texte sort de l'écran, le supprimer
+                if (positionX < -texte.offsetWidth) {
+                    texte.remove();
+                } else {
+                    requestAnimationFrame(animation); // Continuer l'animation
+                }
+            };
+
+            // Démarrer l'animation
+            requestAnimationFrame(animation);
+        }
+
+        function spawnInterval() {
+            const interval = Math.floor(Math.random() * (180000 - 30000 + 1)) + 30000; // Entre 60 et 180 secondes
+            setTimeout(() => {
+                spawnTexte();
+                spawnInterval(); // Relancer la fonction après avoir fait apparaître un texte
+            }, interval);
+        }
+
+        // Générer un texte toutes les 2 secondes
+        spawnInterval();
+
+    </script>
+</body>
+</html>
